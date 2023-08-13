@@ -3,3 +3,18 @@ server:
     context-path: /member
   port:
     8081
+logging:
+  level:
+    com:
+      example:
+        train:
+          member:
+            mapper: trace
+mybatis:
+  mapper-locations: classpath:/mapper/**/*.xml
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    password: Train12306
+    url: jdbc:mysql://rm-cn-x0r3cesys000itvo.rwlb.rds.aliyuncs.com/train_member?characterEncoding=UTF8&autoReconnect=true&serverTimezone=Asia/Shanghai
+    username: train_member
