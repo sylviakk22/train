@@ -17,7 +17,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
-
+        <!--子模块作为依赖被引入另外一个模块，则另一个模块将会引入子模块所使用的所有依赖
+            另一个模块如果再次导入子模块所使用的其他依赖，则只会导入一次而不会报错
+        -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -29,6 +31,7 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <!--引用其他子模块-->
         <dependency>
             <groupId>com.example</groupId>
             <artifactId>common</artifactId>

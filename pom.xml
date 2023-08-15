@@ -2,18 +2,25 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <!--引用默认的父工程项目，这样就可以不用声明版本号-->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.0.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+    <!--顶层依赖，作为整个项目来引用-->
+    <!--组织名-->
     <groupId>com.example</groupId>
+    <!--模块名，唯一标识-->
     <artifactId>train</artifactId>
+    <!--项目版本-->
     <version>0.0.1-SNAPSHOT</version>
+    <!--父工程打包方式必须是pom形式-->
     <packaging>pom</packaging>
     <name>train</name>
     <description>train</description>
+    <!--各个子模块加入到project-root项目中-->
     <modules>
         <module>member</module>
         <module>common</module>
@@ -21,10 +28,22 @@
         <module>generator</module>
     </modules>
     <properties>
+        <!--父模块properties属性能够被子模块继承和使用，可用于统一版本管理-->
         <java.version>17</java.version>
         <spring-cloud.version>2022.0.4</spring-cloud.version>
     </properties>
+    <!--
+    dependencyManagement标签作用：
+        1.用在项目顶层的pom文件中，统一管理项目的依赖和版本
+        2.该标签不能用在子项目的pom文件中，因为在该标签里面的依赖只是声明依赖，并不实现引入
+        3.这个标签里面的依赖不会主动引入到子项目中，子项目要引用这里面的依赖就需要显式声明，但是可以不用指定版本，
+          因为version和scope都读取自顶层pom
+        4.如果某个子项目自定义版本，只需要在dependencies中声明即可
 
+    dependencies标签的使用：
+       父项目中如果不使用dependencyManagement标签，直接使用dependencies标签，
+       那么所有在dependencies里的依赖都会自动引入，并默认被所有的子项目继承
+    -->
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -62,9 +81,33 @@
                 <artifactId>mysql-connector-java</artifactId>
                 <version>8.0.22</version>
             </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.12</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
-
+    <build>
+        <!--统一插件管理，这些插件在子模块中声明即可使用-->
+        <pluginManagement>
+            <!--spring生成可执行jar包的插件，注意不要同时org.apache.maven.plugins使用-->
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <configuration>
+                        <excludes>
+                            <exclude>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                            </exclude>
+                        </excludes>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
 
 </project>
