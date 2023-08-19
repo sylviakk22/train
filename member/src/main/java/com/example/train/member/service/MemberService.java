@@ -1,15 +1,18 @@
 package com.example.train.member.service;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.example.train.common.exception.BusinessException;
 import com.example.train.common.exception.BusinessExceptionEnum;
 import com.example.train.common.util.SnowUtil;
 import com.example.train.member.domain.Member;
 import com.example.train.member.domain.MemberExample;
 import com.example.train.member.mapper.MemberMapper;
+import com.example.train.member.req.MemberLoginReq;
 import com.example.train.member.req.MemberRegisterReq;
 import com.example.train.member.req.MemberSendCodeReq;
+import com.example.train.member.resp.MemberLoginResp;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,10 +32,9 @@ public class MemberService {
     }
     public long register(MemberRegisterReq req){
         String mobile = req.getMobile();
-        MemberExample memberExample = new MemberExample();
-        memberExample.createCriteria().andMobileEqualTo(mobile);//createCriteria()用于创造条件
-        List<Member> list = memberMapper.selectByExample(memberExample);
-        if(CollUtil.isNotEmpty(list)){    //Hutool库的工具类
+        Member memberDB = selectByMobile(mobile);
+        //如果手机号存在
+        if(ObjectUtil.isNotNull(memberDB)){    //Hutool库的工具类
             //return list.get(0).getId();
             throw new BusinessException(BusinessExceptionEnum.MEMBER_MOBILE_EXIST);
         }
@@ -44,11 +46,9 @@ public class MemberService {
     }
     public void sendCode(MemberSendCodeReq req){
         String mobile = req.getMobile();
-        MemberExample memberExample = new MemberExample();
-        memberExample.createCriteria().andMobileEqualTo(mobile);//createCriteria()用于创造条件
-        List<Member> list = memberMapper.selectByExample(memberExample);
+        Member memberDB = selectByMobile(mobile);
         //如果手机号不存在，则插入一条记录
-        if(CollUtil.isEmpty(list)){    //Hutool库的工具类
+        if(ObjectUtil.isNull(memberDB)){    //Hutool库的工具类
             LOG.info("手机号不存在，插入一条记录");
             Member member = new Member();
             member.setId(SnowUtil.getSnowflakeNextId());//雪花算法
@@ -60,8 +60,8 @@ public class MemberService {
         }
 
         // 生成验证码
-         String code = RandomUtil.randomString(4);
-//        String code = "8888";
+//         String code = RandomUtil.randomString(4);
+        String code = "8888";
         LOG.info("生成短信验证码：{}", code);
 
         // 保存短信记录表：手机号，短信验证码，有效期，是否已使用，业务类型，发送时间，使用时间
@@ -69,5 +69,32 @@ public class MemberService {
 
         // 对接短信通道，发送短信
         LOG.info("对接短信通道");
+    }
+    public MemberLoginResp login(MemberLoginReq req){
+        String mobile = req.getMobile();
+        String code = req.getCode();
+        Member memberDB = selectByMobile(mobile);
+        //如果手机号不存在，则抛出手机号不存在异常，并提示用户输入手机号（注册）
+        if(ObjectUtil.isNull(memberDB)){    //Hutool库的工具类
+            throw new BusinessException(BusinessExceptionEnum.MEMBER_MOBILE_NOT_EXIST);
+        }
+        //校验短信验证码
+        if(!code.equals("8888")){
+            throw new BusinessException(BusinessExceptionEnum.MEMBER_MOBILE_CODE_ERROR);
+        }
+        return BeanUtil.copyProperties(memberDB, MemberLoginResp.class);//Hutool的方法，需升级到5.8.10版本
+    }
+
+    private Member selectByMobile(String mobile) {
+        MemberExample memberExample = new MemberExample();
+        memberExample.createCriteria().andMobileEqualTo(mobile);//createCriteria()用于创造条件
+        List<Member> list = memberMapper.selectByExample(memberExample);
+        //如果手机号不存在
+        if(CollUtil.isEmpty(list)){    //Hutool库的工具类
+            return null;
+        }
+        else{
+            return list.get(0); //第一条member记录
+        }
     }
 }
