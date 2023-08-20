@@ -1,18 +1,21 @@
 GET http://localhost:8080/member/member/count
 Accept: application/json
-###
-POST http://localhost:8080/member/member/register
-Content-Type: application/x-www-form-urlencoded
-
-mobile=12345678
 
 ###
 POST http://localhost:8080/member/member/sendCode
-Content-Type: application/x-www-form-urlencoded
+Content-Type: application/json
 
-mobile=12345678910
+{
+
+"mobile" : "11335566776"
+
+}
 ###
 POST http://localhost:8080/member/member/login
-Content-Type: application/x-www-form-urlencoded
+Content-Type: application/json
 
-mobile=12345678911&code=1
+{
+
+"mobile" : "11335566776",
+  "code" : "8888"
+}
