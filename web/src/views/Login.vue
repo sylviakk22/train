@@ -52,7 +52,6 @@ export default defineComponent({
     const sendCode = () =>{
       axios.post("http://localhost:8080/member/member/sendCode", {mobile: loginForm.mobile
       }).then(res => {
-        console.log(res);
         let data = res.data;
         if(data.success) {
           notification.success({ description: '发送验证码成功！'});
@@ -66,11 +65,9 @@ export default defineComponent({
 
     const login = () =>{
       axios.post("http://localhost:8080/member/member/login", loginForm).then(res => {
-        console.log(res);
         let data = res.data;
         if(data.success) {
           notification.success({ description: '登录成功！'});
-          console.log("登录成功：", data.content);
         }
         else{
           notification.error({description: data.message});
