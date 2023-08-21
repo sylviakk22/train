@@ -74,8 +74,26 @@
     </a-layout>
   </a-layout>
 </template>
-
-<style scoped>
+<script>
+import { UserOutlined, LaptopOutlined, NotificationOutlined } from '@ant-design/icons-vue';
+import { defineComponent, ref } from 'vue';
+export default defineComponent({
+  components: {
+    UserOutlined,
+    LaptopOutlined,
+    NotificationOutlined,
+  },
+  setup() {
+    return {
+      selectedKeys1: ref(['2']),
+      selectedKeys2: ref(['1']),
+      collapsed: ref(false),
+      openKeys: ref(['sub1']),
+    };
+  },
+});
+</script>
+<style>
 #components-layout-demo-top-side-2 .logo {
   float: left;
   width: 120px;
