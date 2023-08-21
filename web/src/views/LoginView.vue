@@ -43,7 +43,7 @@ import axios from 'axios';
 import {notification} from "ant-design-vue";
 import { useRouter } from "vue-router";
 export default defineComponent({
-  name: "Login",
+  name: "LoginView",
   setup() {
     const router = useRouter();
     const loginForm = reactive({
