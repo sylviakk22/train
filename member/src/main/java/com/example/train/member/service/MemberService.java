@@ -5,6 +5,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.example.train.common.exception.BusinessException;
 import com.example.train.common.exception.BusinessExceptionEnum;
+import com.example.train.common.util.JwtUtil;
 import com.example.train.common.util.SnowUtil;
 import com.example.train.member.domain.Member;
 import com.example.train.member.domain.MemberExample;
@@ -82,7 +83,10 @@ public class MemberService {
         if(!code.equals("8888")){
             throw new BusinessException(BusinessExceptionEnum.MEMBER_MOBILE_CODE_ERROR);
         }
-        return BeanUtil.copyProperties(memberDB, MemberLoginResp.class);//Hutool的方法，需升级到5.8.10版本
+        MemberLoginResp memberLoginResp = BeanUtil.copyProperties(memberDB, MemberLoginResp.class);
+        String token = JwtUtil.createToken(memberLoginResp.getId(), memberLoginResp.getMobile());
+        memberLoginResp.setToken(token);
+        return memberLoginResp;//Hutool的方法，需升级到5.8.10版本
     }
 
     private Member selectByMobile(String mobile) {
