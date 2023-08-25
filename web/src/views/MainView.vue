@@ -22,8 +22,8 @@
 import { defineComponent, ref } from 'vue';
 import HeaderView from "@/components/HeaderView.vue";
 import SiderView from "@/components/SiderView.vue";
-import axios from "axios";
-import {notification} from "ant-design-vue";
+// import axios from "axios";
+// import {notification} from "ant-design-vue";
 // import {notification} from "ant-design-vue";
 export default defineComponent({
   components: {
@@ -32,16 +32,16 @@ export default defineComponent({
   },
   setup() {
     const count = ref(0);
-    axios.get("/member/member/count").then((response) => {
-      let data = response.data;
-      if (data.success) {
-        count.value = data.content;
-      } else {
-        if(response.status !== 401){
-          notification.error({ description: data.message });
-        }
-      }
-    });
+    // axios.get("/member/member/count").then((response) => {
+    //   let data = response.data;
+    //   if (data.success) {
+    //     count.value = data.content;
+    //   } else {
+    //     if(response.status !== 401){
+    //       notification.error({ description: data.message });
+    //     }
+    //   }
+    // });
     return {
       count
     };
