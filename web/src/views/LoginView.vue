@@ -40,9 +40,9 @@
 <script>
 import { defineComponent, reactive } from 'vue';
 import axios from 'axios';
-import {notification} from "ant-design-vue";
 import { useRouter } from "vue-router";
 import store from "@/store";
+import {notification} from "ant-design-vue";
 export default defineComponent({
   name: "LoginView",
   setup() {
@@ -61,7 +61,7 @@ export default defineComponent({
           // loginForm.code = "8888";
         }
         else{
-          notification.error({ description: data.message});
+          // notification.error({ description: data.message});
         }
       })
     };

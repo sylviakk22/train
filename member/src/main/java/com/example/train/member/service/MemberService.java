@@ -11,7 +11,6 @@ import com.example.train.member.domain.Member;
 import com.example.train.member.domain.MemberExample;
 import com.example.train.member.mapper.MemberMapper;
 import com.example.train.member.req.MemberLoginReq;
-import com.example.train.member.req.MemberRegisterReq;
 import com.example.train.member.req.MemberSendCodeReq;
 import com.example.train.member.resp.MemberLoginResp;
 import jakarta.annotation.Resource;
@@ -31,20 +30,20 @@ public class MemberService {
     public int count() {
         return Math.toIntExact(memberMapper.countByExample(null));
     }
-    public long register(MemberRegisterReq req){
-        String mobile = req.getMobile();
-        Member memberDB = selectByMobile(mobile);
-        //如果手机号存在
-        if(ObjectUtil.isNotNull(memberDB)){    //Hutool库的工具类
-            //return list.get(0).getId();
-            throw new BusinessException(BusinessExceptionEnum.MEMBER_MOBILE_EXIST);
-        }
-        Member member = new Member();
-        member.setId(SnowUtil.getSnowflakeNextId());//雪花算法
-        member.setMobile(mobile);
-        memberMapper.insert(member);
-        return member.getId();
-    }
+//    public long register(MemberRegisterReq req){
+//        String mobile = req.getMobile();
+//        Member memberDB = selectByMobile(mobile);
+//        //如果手机号存在
+//        if(ObjectUtil.isNotNull(memberDB)){    //Hutool库的工具类
+//            //return list.get(0).getId();
+//            throw new BusinessException(BusinessExceptionEnum.MEMBER_MOBILE_EXIST);
+//        }
+//        Member member = new Member();
+//        member.setId(SnowUtil.getSnowflakeNextId());//雪花算法
+//        member.setMobile(mobile);
+//        memberMapper.insert(member);
+//        return member.getId();
+//    }
     public void sendCode(MemberSendCodeReq req){
         String mobile = req.getMobile();
         Member memberDB = selectByMobile(mobile);
@@ -86,7 +85,7 @@ public class MemberService {
         MemberLoginResp memberLoginResp = BeanUtil.copyProperties(memberDB, MemberLoginResp.class);
         String token = JwtUtil.createToken(memberLoginResp.getId(), memberLoginResp.getMobile());
         memberLoginResp.setToken(token);
-        return memberLoginResp;//Hutool的方法，需升级到5.8.10版本
+        return memberLoginResp;//Hutool的方法，需升级到最新版本
     }
 
     private Member selectByMobile(String mobile) {
