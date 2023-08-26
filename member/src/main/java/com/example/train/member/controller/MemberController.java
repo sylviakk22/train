@@ -23,7 +23,7 @@ public class MemberController {
         return commonResp;
     }
 
-    @PostMapping("/sendCode")
+    @PostMapping("/send-code")
     public CommonResp<Long> sendCode(@Valid @RequestBody MemberSendCodeReq req){
         memberService.sendCode(req);
         return new CommonResp<>();

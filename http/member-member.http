@@ -3,7 +3,7 @@ Accept: application/json
 token:123
 
 ###
-POST http://localhost:8080/member/member/sendCode
+POST http://localhost:8080/member/member/send-code
 Content-Type: application/json
 
 {
