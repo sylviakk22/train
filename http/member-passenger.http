@@ -3,8 +3,21 @@ Content-Type: application/json
 token: {{token}}
 
 {
-  "name": "test",
-  "idCard": "123321",
+  "name": "test2",
+  "idCard": "22222",
+  "type": "2"
+}
+
+###
+POST http://localhost:8080/member/passenger/save
+Content-Type: application/json
+token: {{token}}
+
+{
+  "id": 1695116822438875136,
+  "memberId": 1694283005142634496,
+  "name": "test1",
+  "idCard": "111111",
   "type": "1"
 }
 
