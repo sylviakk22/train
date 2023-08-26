@@ -1,8 +1,15 @@
 <template>
   <p>
-    <a-button type="primary" @click="showModal">新增</a-button>
+    <a-space>
+      <a-button type="primary" @click="handleQuery()">刷新</a-button>
+      <a-button type="primary" @click="showModal">新增</a-button>
+    </a-space>
   </p>
-  <a-table :dataSource="passengers" :columns="columns" />
+  <a-table :dataSource="passengers"
+           :columns="columns"
+           :pagination="pagination"
+           @change="handleTableChange"
+           :loading="loading"/>
   <a-modal v-model:visible="visible" title="乘车人" @ok="handleOk"
            ok-text="确认" cancel-text="取消">
     <a-form :model="passenger" :label-col="{span: 4}" :wrapper-col="{ span: 20 }">
@@ -30,6 +37,7 @@ import {notification} from "ant-design-vue";
 export default defineComponent({
   setup() {
     const visible = ref(false);
+    let loading = ref(false);
     const passenger = reactive({
       id: undefined,
       memberId: undefined,
@@ -40,6 +48,12 @@ export default defineComponent({
       updateTime: undefined,
     });
     const passengers = ref([]);
+    // 分页的三个属性名是固定的
+    const pagination = reactive({
+      total: 0,
+      current: 1,
+      pageSize: 2,
+    });
     const columns = [{
       title: '姓名',
       dataIndex: 'name',
@@ -64,6 +78,10 @@ export default defineComponent({
             if(data.success){
               notification.success({description: "保存成功！"});
               visible.value = false;
+              handleQuery({
+                page: pagination.current,
+                size: pagination.pageSize
+              });
             }
             else{
               notification.error({description: data.message});
@@ -72,25 +90,45 @@ export default defineComponent({
       )
     };
     const handleQuery = (param) => {
+      if (!param) {
+        param = {
+          page: 1,
+          size: pagination.pageSize
+        };
+      }
+      loading.value = true;
       axios.get("/member/passenger/query-list", {
         params: {
           page: param.page,
           size: param.size
         }
       }).then((response) => {
+        loading.value = false;
         let data = response.data;
         if (data.success) {
           passengers.value = data.content.list;
+          // 设置分页控件的值
+          pagination.current = param.page;
+          pagination.total = data.content.total;
         } else {
           notification.error({description: data.message});
         }
       });
     };
+    const handleTableChange = (_pagination) => {
+      // 此处的_pagination是自带的分页参数
+      // console.log("看看自带的分页参数都有啥：" + _pagination);
+      handleQuery({
+        page: _pagination.current,
+        size: _pagination.pageSize
+      });
+    };
+
 
     onMounted(() => {
       handleQuery({
         page: 1,
-        size: 4
+        size: pagination.pageSize
       });
     });
     return {
@@ -99,7 +137,11 @@ export default defineComponent({
       showModal,
       handleOk,
       passengers,
-      columns
+      pagination,
+      columns,
+      handleTableChange,
+      handleQuery,
+      loading
     };
   },
 });
