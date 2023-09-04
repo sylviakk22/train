@@ -1,17 +1,16 @@
-package com.example.train.member.service;
+package com.example.train.${module}.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
-import com.example.train.common.context.LoginMemberContext;
 import com.example.train.common.resp.PageResp;
 import com.example.train.common.util.SnowUtil;
-import com.example.train.member.domain.${Domain};
-import com.example.train.member.domain.${Domain}Example;
-import com.example.train.member.mapper.${Domain}Mapper;
-import com.example.train.member.req.${Domain}QueryReq;
-import com.example.train.member.req.${Domain}SaveReq;
-import com.example.train.member.resp.${Domain}QueryResp;
+import com.example.train.${module}.domain.${Domain};
+import com.example.train.${module}.domain.${Domain}Example;
+import com.example.train.${module}.mapper.${Domain}Mapper;
+import com.example.train.${module}.req.${Domain}QueryReq;
+import com.example.train.${module}.req.${Domain}SaveReq;
+import com.example.train.${module}.resp.${Domain}QueryResp;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
@@ -32,7 +31,6 @@ public class ${Domain}Service {
         ${Domain} ${domain} = BeanUtil.copyProperties(req, ${Domain}.class);
         if(ObjectUtil.isNull(${domain}.getId())){
             ${domain}.setId(SnowUtil.getSnowflakeNextId());
-            ${domain}.setMemberId(LoginMemberContext.getId());
             ${domain}.setCreateTime(now);
             ${domain}.setUpdateTime(now);
             ${domain}Mapper.insert(${domain});
@@ -46,9 +44,6 @@ public class ${Domain}Service {
         ${Domain}Example ${domain}Example = new ${Domain}Example();
         ${domain}Example.setOrderByClause("id desc");
         ${Domain}Example.Criteria criteria = ${domain}Example.createCriteria();
-        if(ObjectUtil.isNotNull(req.getMemberId())){
-            criteria.andMemberIdEqualTo(req.getMemberId());
-        }
         LOG.info("查询页码：{}", req.getPage());
         LOG.info("每页条数：{}", req.getSize());
         PageHelper.startPage(req.getPage(), req.getSize());
