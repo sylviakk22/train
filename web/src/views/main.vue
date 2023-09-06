@@ -13,8 +13,8 @@
 </template>
 <script>
 import { defineComponent } from 'vue';
-import HeaderView from "@/components/HeaderView.vue";
-import SiderView from "@/components/SiderView.vue";
+import HeaderView from "@/components/header-view.vue";
+import SiderView from "@/components/sider-view.vue";
 
 export default defineComponent({
   components: {

@@ -6,22 +6,22 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: () => import('../views/LoginView.vue')
+    component: () => import('../views/login.vue')
   },
   {
     path: '/',
     name: 'main',
-    component: () => import('../views/MainView.vue'),
+    component: () => import('../views/main.vue'),
     meta:{
       loginRequire : true
     },
     children: [{
       path: 'welcome',
-      component: () => import('../views/main/WelcomeView.vue'),
+      component: () => import('../views/main/welcome.vue'),
     },
       {
         path: 'passenger',
-        component: () => import('../views/main/PassengerView.vue'),
+        component: () => import('../views/main/passenger.vue'),
       },
     ]
   },
