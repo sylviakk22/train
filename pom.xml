@@ -26,6 +26,7 @@
         <module>common</module>
         <module>gateway</module>
         <module>generator</module>
+        <module>business</module>
     </modules>
     <properties>
         <!--父模块properties属性能够被子模块继承和使用，可用于统一版本管理-->

@@ -1,8 +1,8 @@
 server:
   servlet:
-    context-path: /member
+    context-path: /business
   port:
-    8001
+    8002
 logging:
   level:
     com:
@@ -15,6 +15,6 @@ mybatis:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: train_member
+    username: train_business
     password: Train12306
-    url: jdbc:mysql://rm-cn-x0r3cesys000itvo.rwlb.rds.aliyuncs.com/train_member?characterEncoding=UTF8&autoReconnect=true&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://rm-cn-x0r3cesys000itvo.rwlb.rds.aliyuncs.com/train_business?characterEncoding=UTF8&autoReconnect=true&serverTimezone=Asia/Shanghai
