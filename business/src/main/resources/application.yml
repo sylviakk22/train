@@ -16,5 +16,5 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: train_business
-    password: Train12306
+    password: Business12306
     url: jdbc:mysql://rm-cn-x0r3cesys000itvo.rwlb.rds.aliyuncs.com/train_business?characterEncoding=UTF8&autoReconnect=true&serverTimezone=Asia/Shanghai
