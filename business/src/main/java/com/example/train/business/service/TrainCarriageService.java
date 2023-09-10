@@ -3,14 +3,15 @@ package com.example.train.business.service;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
-import com.example.train.common.resp.PageResp;
-import com.example.train.common.util.SnowUtil;
 import com.example.train.business.domain.TrainCarriage;
 import com.example.train.business.domain.TrainCarriageExample;
+import com.example.train.business.enums.SeatColEnum;
 import com.example.train.business.mapper.TrainCarriageMapper;
 import com.example.train.business.req.TrainCarriageQueryReq;
 import com.example.train.business.req.TrainCarriageSaveReq;
 import com.example.train.business.resp.TrainCarriageQueryResp;
+import com.example.train.common.resp.PageResp;
+import com.example.train.common.util.SnowUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
@@ -28,6 +29,11 @@ public class TrainCarriageService {
     private TrainCarriageMapper trainCarriageMapper;
     public void save(TrainCarriageSaveReq req){
         DateTime now = DateTime.now();
+        //根据座位等级自动计算列数和总座位数
+        List<SeatColEnum> seatColEnums = SeatColEnum.getColsByType(req.getSeatType());
+        req.setColCount(seatColEnums.size());
+        req.setSeatCount(req.getColCount()* req.getRowCount());
+
         TrainCarriage trainCarriage = BeanUtil.copyProperties(req, TrainCarriage.class);
         if(ObjectUtil.isNull(trainCarriage.getId())){
             trainCarriage.setId(SnowUtil.getSnowflakeNextId());
