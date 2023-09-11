@@ -3,6 +3,8 @@ package com.example.train.business.service;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
+import com.example.train.common.exception.BusinessException;
+import com.example.train.common.exception.BusinessExceptionEnum;
 import com.example.train.common.resp.PageResp;
 import com.example.train.common.util.SnowUtil;
 import com.example.train.business.domain.Train;
@@ -30,6 +32,11 @@ public class TrainService {
         DateTime now = DateTime.now();
         Train train = BeanUtil.copyProperties(req, Train.class);
         if(ObjectUtil.isNull(train.getId())){
+            // 保存之前，先校验唯一键是否存在
+            Train trainDB = selectByUnique(req.getCode());
+            if(ObjectUtil.isNotEmpty(trainDB)){
+                throw new BusinessException(BusinessExceptionEnum.BUSINESS_TRAIN_CODE_UNIQUE_ERROR);
+            }
             train.setId(SnowUtil.getSnowflakeNextId());
             train.setCreateTime(now);
             train.setUpdateTime(now);
@@ -38,6 +45,17 @@ public class TrainService {
         else{
             train.setUpdateTime(now);
             trainMapper.updateByPrimaryKey(train);
+        }
+    }
+    private Train selectByUnique(String code) {
+        TrainExample trainExample = new TrainExample();
+        trainExample.createCriteria().andCodeEqualTo(code);
+        List<Train> list = trainMapper.selectByExample(trainExample);
+        if(ObjectUtil.isNotEmpty(list)){
+            return list.get(0);
+        }
+        else{
+            return null;
         }
     }
     public PageResp<TrainQueryResp> queryList(TrainQueryReq req){

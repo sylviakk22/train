@@ -9,6 +9,8 @@ import com.example.train.business.mapper.StationMapper;
 import com.example.train.business.req.StationQueryReq;
 import com.example.train.business.req.StationSaveReq;
 import com.example.train.business.resp.StationQueryResp;
+import com.example.train.common.exception.BusinessException;
+import com.example.train.common.exception.BusinessExceptionEnum;
 import com.example.train.common.resp.PageResp;
 import com.example.train.common.util.SnowUtil;
 import com.github.pagehelper.PageHelper;
@@ -30,6 +32,12 @@ public class StationService {
         DateTime now = DateTime.now();
         Station station = BeanUtil.copyProperties(req, Station.class);
         if(ObjectUtil.isNull(station.getId())){
+            // 保存之前，先校验唯一键是否存在
+            Station stationDB = selectByUnique(req.getName());
+            if(ObjectUtil.isNotEmpty(stationDB)){
+                throw new BusinessException(BusinessExceptionEnum.BUSINESS_STATION_NAME_UNIQUE_ERROR);
+            }
+
             station.setId(SnowUtil.getSnowflakeNextId());
             station.setCreateTime(now);
             station.setUpdateTime(now);
@@ -40,6 +48,19 @@ public class StationService {
             stationMapper.updateByPrimaryKey(station);
         }
     }
+
+    private Station selectByUnique(String name) {
+        StationExample stationExample = new StationExample();
+        stationExample.createCriteria().andNameEqualTo(name);
+        List<Station> list = stationMapper.selectByExample(stationExample);
+        if(ObjectUtil.isNotEmpty(list)){
+            return list.get(0);
+        }
+        else{
+            return null;
+        }
+    }
+
     public PageResp<StationQueryResp> queryList(StationQueryReq req){
         StationExample stationExample = new StationExample();
         stationExample.setOrderByClause("id desc");
